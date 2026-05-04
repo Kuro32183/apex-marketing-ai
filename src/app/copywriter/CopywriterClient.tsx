@@ -147,7 +147,7 @@ export function CopywriterClient() {
             </div>
 
             {/* Body */}
-            <div style={{ padding: '16px 18px', fontSize: 12.5, color: 'var(--text2)', lineHeight: 1.8, whiteSpace: 'pre-wrap', minHeight: 200, fontFamily: ch.id === 'google' ? 'var(--font-mono)' : 'inherit', fontSize: ch.id === 'google' ? 11 : 12.5 }}>
+            <div style={{ padding: '16px 18px', fontSize: ch.id === 'google' ? 11 : 12.5, color: 'var(--text2)', lineHeight: 1.8, whiteSpace: 'pre-wrap', minHeight: 200, fontFamily: ch.id === 'google' ? 'var(--font-mono)' : 'inherit' }}>
               {isGenerating
                 ? <span style={{ color: 'var(--text3)', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: 1 }}>生成中...</span>
                 : copies[ch.id]}

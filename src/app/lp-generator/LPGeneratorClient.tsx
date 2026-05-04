@@ -172,11 +172,27 @@ export function LPGeneratorClient() {
 }
 
 /* ── LP Preview ── */
+const LP = {
+  bg:       '#ffffff',
+  bg2:      '#f7f7f5',
+  bg3:      '#f0ede8',
+  text:     '#1c1c1e',
+  text2:    '#4a4a52',
+  text3:    '#8a8a94',
+  border:   '#e4e2dc',
+  accent:   '#2c4a7c',
+  accentL:  '#3a5f9a',
+  amber:    '#7a5c30',
+  amberBg:  '#f5f0e8',
+  red:      '#7a3030',
+  redBg:    '#fdf0f0',
+}
+
 function LPPreview({ form, generated, streamText }: { form: any; generated: boolean; streamText: string }) {
   const price = Number(form.price).toLocaleString()
   const anchorPrice = (Number(form.price) * 2).toLocaleString()
   const achievementList: string[] = form.achievements.split(/[/／]/).map((s: string) => s.trim()).filter(Boolean)
-  const eyebrow = achievementList.slice(0, 2).join(' · ')
+  const eyebrow = achievementList.slice(0, 2).join('　|　')
   const guarantee = achievementList.find((a: string) => a.includes('返金') || a.includes('保証')) ?? '分割払い対応'
   const firstTarget = form.target.split(/[・,、]/)[0]
 
@@ -186,29 +202,36 @@ function LPPreview({ form, generated, streamText }: { form: any; generated: bool
   const showAnchor  = form.appeals.includes('anchor')
 
   return (
-    <div>
+    <div style={{ background: LP.bg, color: LP.text, fontFamily: 'var(--font-body)' }}>
+
       {/* Hero */}
-      <div style={{ background: 'linear-gradient(160deg,#0a0c14,#12101e)', padding: '40px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
-        {eyebrow && <div className="eyebrow gold" style={{ marginBottom: 12 }}>{eyebrow}</div>}
-        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 400, lineHeight: 1.3, marginBottom: 12, color: 'var(--text)' }}>
+      <div style={{ padding: '44px 48px 40px', textAlign: 'center', borderBottom: `1px solid ${LP.border}` }}>
+        {eyebrow && (
+          <div style={{ fontSize: 10.5, letterSpacing: 1.5, color: LP.text3, marginBottom: 16, fontFamily: 'var(--font-mono)', textTransform: 'uppercase' }}>
+            {eyebrow}
+          </div>
+        )}
+        <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 26, fontWeight: 400, lineHeight: 1.45, marginBottom: 14, color: LP.text }}>
           {firstTarget}のための<br />
-          <span style={{ color: 'var(--gold-l)' }}>{form.name}</span>
+          <span style={{ color: LP.accentL }}>{form.name}</span>
         </h2>
-        <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.7, maxWidth: 440, margin: '0 auto 22px' }}>
+        <p style={{ fontSize: 13, color: LP.text2, lineHeight: 1.8, maxWidth: 420, margin: '0 auto 24px' }}>
           {form.target}を対象にした、再現性のある成果を出すプログラムです。
         </p>
-        <div style={{ display: 'inline-block', background: 'linear-gradient(135deg,var(--gold),#a07020)', color: '#060400', padding: '13px 32px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', marginBottom: 8 }}>
-          無料個別相談を予約する{showUrgency ? '（今月残3枠）' : ''}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+          <div style={{ background: LP.accent, color: '#fff', padding: '11px 28px', borderRadius: 5, fontWeight: 500, fontSize: 13, cursor: 'pointer', letterSpacing: .3 }}>
+            無料個別相談を予約する{showUrgency ? '（今月残3枠）' : ''}
+          </div>
+          {showUrgency && (
+            <div style={{ fontSize: 11, color: LP.red, letterSpacing: .5 }}>今月の受付は残り3名です</div>
+          )}
         </div>
-        {showUrgency && (
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--red)', letterSpacing: 2 }}>⚡ 今月の受付は残り3名です</div>
-        )}
       </div>
 
       {/* Pain */}
       {showPain && (
-        <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)' }}>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 14, color: 'var(--text)' }}>
+        <div style={{ padding: '28px 48px', borderBottom: `1px solid ${LP.border}`, background: LP.bg2 }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 400, marginBottom: 14, color: LP.text }}>
             {firstTarget}の方へ — 次の状況に当てはまりますか？
           </h3>
           {[
@@ -217,23 +240,23 @@ function LPPreview({ form, generated, streamText }: { form: any; generated: bool
             '値下げしないと売れない状況が続いている',
             '何を改善すれば売上が上がるか分からない',
           ].map(p => (
-            <div key={p} style={{ display: 'flex', gap: 10, padding: '7px 0', borderBottom: '1px solid var(--border)', fontSize: 12.5, color: 'var(--text2)' }}>
-              <span style={{ color: 'var(--red)', flexShrink: 0 }}>✕</span>{p}
+            <div key={p} style={{ display: 'flex', gap: 10, padding: '8px 0', borderBottom: `1px solid ${LP.border}`, fontSize: 12.5, color: LP.text2, alignItems: 'center' }}>
+              <span style={{ color: LP.red, flexShrink: 0, fontSize: 11 }}>✕</span>{p}
             </div>
           ))}
         </div>
       )}
 
-      {/* Results / Proof */}
+      {/* Proof */}
       {showProof && achievementList.length > 0 && (
-        <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)', background: 'rgba(201,168,76,.02)' }}>
-          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 16, color: 'var(--gold-l)' }}>
+        <div style={{ padding: '28px 48px', borderBottom: `1px solid ${LP.border}` }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 18, fontWeight: 400, marginBottom: 16, color: LP.text }}>
             実績・保証
           </h3>
-          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(achievementList.length, 3)},1fr)`, gap: 12 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(achievementList.length, 3)},1fr)`, gap: 10 }}>
             {achievementList.slice(0, 3).map((ach, i) => (
-              <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 8, padding: 14, textAlign: 'center' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600, color: 'var(--gold-l)', lineHeight: 1.3 }}>{ach}</div>
+              <div key={i} style={{ background: LP.amberBg, border: `1px solid ${LP.border}`, borderRadius: 6, padding: '14px 12px', textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, fontWeight: 500, color: LP.amber, lineHeight: 1.4 }}>{ach}</div>
               </div>
             ))}
           </div>
@@ -242,18 +265,18 @@ function LPPreview({ form, generated, streamText }: { form: any; generated: bool
 
       {/* Anchor */}
       {showAnchor && (
-        <div style={{ padding: '16px 40px', background: 'rgba(201,168,76,.04)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text3)', textDecoration: 'line-through' }}>通常価格: ¥{anchorPrice}</span>
-          <span style={{ marginLeft: 12, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--gold-l)' }}>→ 今なら特別価格でご提供</span>
+        <div style={{ padding: '14px 48px', background: LP.bg3, borderBottom: `1px solid ${LP.border}`, textAlign: 'center' }}>
+          <span style={{ fontSize: 11, color: LP.text3, textDecoration: 'line-through' }}>通常価格: ¥{anchorPrice}</span>
+          <span style={{ marginLeft: 12, fontSize: 11, color: LP.accentL, fontWeight: 500 }}>→ 今なら特別価格でご提供</span>
         </div>
       )}
 
       {/* Price */}
-      <div style={{ padding: '28px 40px', textAlign: 'center' }}>
-        <div style={{ display: 'inline-block', background: 'linear-gradient(135deg,var(--surface),var(--bg3))', border: '1px solid var(--gold-d)', borderRadius: 12, padding: '24px 48px' }}>
-          <div className="eyebrow" style={{ marginBottom: 8 }}>プログラム料金</div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 42, fontWeight: 600, color: 'var(--gold-l)' }}>¥{price}</div>
-          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 6 }}>{guarantee}</div>
+      <div style={{ padding: '32px 48px', textAlign: 'center', background: LP.bg2, borderTop: `1px solid ${LP.border}` }}>
+        <div style={{ display: 'inline-block', background: LP.bg, border: `1px solid ${LP.border}`, borderRadius: 8, padding: '22px 44px' }}>
+          <div style={{ fontSize: 10, letterSpacing: 2, color: LP.text3, textTransform: 'uppercase', marginBottom: 8, fontFamily: 'var(--font-mono)' }}>プログラム料金</div>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 38, fontWeight: 400, color: LP.text }}>¥{price}</div>
+          <div style={{ fontSize: 11, color: LP.text3, marginTop: 6 }}>{guarantee}</div>
         </div>
       </div>
     </div>

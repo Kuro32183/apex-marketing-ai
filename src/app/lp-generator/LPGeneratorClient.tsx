@@ -153,15 +153,12 @@ export function LPGeneratorClient() {
                     </div>
                   </div>
 
-                  {generating ? (
-                    <div style={{ padding: '32px 24px' }}>
-                      <div style={{ fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text3)', letterSpacing: 2, whiteSpace: 'pre-wrap', lineHeight: 1.8 }}>
-                        {streamText || 'AIが生成中...'}
-                      </div>
+                  {generating && (
+                    <div style={{ padding: '10px 18px', background: 'var(--bg3)', borderBottom: '1px solid var(--border)', fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text3)', letterSpacing: 1 }}>
+                      ✦ AIが最適化中...
                     </div>
-                  ) : (
-                    <LPPreview form={form} generated={generated} streamText={streamText} />
                   )}
+                  <LPPreview form={form} generated={generated} streamText={streamText} />
                 </div>
               </motion.div>
             )}
@@ -176,78 +173,87 @@ export function LPGeneratorClient() {
 
 /* ── LP Preview ── */
 function LPPreview({ form, generated, streamText }: { form: any; generated: boolean; streamText: string }) {
-  if (!generated && !streamText) {
-    return (
-      <div style={{ padding: '48px 24px', textAlign: 'center', color: 'var(--text3)', fontFamily: 'var(--font-mono)', fontSize: 12, letterSpacing: 2 }}>
-        講座情報を入力して「AI生成」を押してください
-      </div>
-    )
-  }
-
   const price = Number(form.price).toLocaleString()
+  const anchorPrice = (Number(form.price) * 2).toLocaleString()
+  const achievementList: string[] = form.achievements.split(/[/／]/).map((s: string) => s.trim()).filter(Boolean)
+  const eyebrow = achievementList.slice(0, 2).join(' · ')
+  const guarantee = achievementList.find((a: string) => a.includes('返金') || a.includes('保証')) ?? '分割払い対応'
+  const firstTarget = form.target.split(/[・,、]/)[0]
+
+  const showPain    = form.appeals.includes('pain')
+  const showProof   = form.appeals.includes('proof') || form.appeals.includes('number')
+  const showUrgency = form.appeals.includes('urgency')
+  const showAnchor  = form.appeals.includes('anchor')
 
   return (
     <div>
       {/* Hero */}
       <div style={{ background: 'linear-gradient(160deg,#0a0c14,#12101e)', padding: '40px', textAlign: 'center', borderBottom: '1px solid var(--border)' }}>
-        <div className="eyebrow gold" style={{ marginBottom: 12 }}>受講生300名突破 · 平均売上改善率280%</div>
+        {eyebrow && <div className="eyebrow gold" style={{ marginBottom: 12 }}>{eyebrow}</div>}
         <h2 style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 400, lineHeight: 1.3, marginBottom: 12, color: 'var(--text)' }}>
-          {form.target.split('・')[0]}が<br />
-          <span style={{ color: 'var(--gold-l)' }}>6ヶ月で売上を3倍にした</span><br />
-          再現性のある集客戦略
+          {firstTarget}のための<br />
+          <span style={{ color: 'var(--gold-l)' }}>{form.name}</span>
         </h2>
         <p style={{ fontSize: 13, color: 'var(--text2)', lineHeight: 1.7, maxWidth: 440, margin: '0 auto 22px' }}>
-          「集客」ではなく「選ばれる理由の言語化」から始める。300名が実証した、広告費に頼らない高単価成約の仕組みです。
+          {form.target}を対象にした、再現性のある成果を出すプログラムです。
         </p>
         <div style={{ display: 'inline-block', background: 'linear-gradient(135deg,var(--gold),#a07020)', color: '#060400', padding: '13px 32px', borderRadius: 6, fontWeight: 700, fontSize: 13, cursor: 'pointer', marginBottom: 8 }}>
-          無料個別相談を予約する（今月残3枠）
+          無料個別相談を予約する{showUrgency ? '（今月残3枠）' : ''}
         </div>
-        <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--red)', letterSpacing: 2 }}>⚡ 今月の受付は残り3名です</div>
+        {showUrgency && (
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 10, color: 'var(--red)', letterSpacing: 2 }}>⚡ 今月の受付は残り3名です</div>
+        )}
       </div>
 
       {/* Pain */}
-      <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 14, color: 'var(--text)' }}>
-          次の状況に1つでも当てはまる方へ
-        </h3>
-        {[
-          '広告費を投下しても成約が増えない',
-          'SNS投稿を続けているが問い合わせが来ない',
-          '値下げしないと売れない状況が続いている',
-          '何を改善すれば売上が上がるか分からない',
-        ].map(p => (
-          <div key={p} style={{ display: 'flex', gap: 10, padding: '7px 0', borderBottom: '1px solid var(--border)', fontSize: 12.5, color: 'var(--text2)' }}>
-            <span style={{ color: 'var(--red)', flexShrink: 0 }}>✕</span>{p}
-          </div>
-        ))}
-      </div>
-
-      {/* Results */}
-      <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)', background: 'rgba(201,168,76,.02)' }}>
-        <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 16, color: 'var(--gold-l)' }}>
-          受講生の具体的な変化（数値）
-        </h3>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12 }}>
+      {showPain && (
+        <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)' }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 14, color: 'var(--text)' }}>
+            {firstTarget}の方へ — 次の状況に当てはまりますか？
+          </h3>
           {[
-            { num: '280%', label: '平均売上改善率', sub: '受講前比・6ヶ月以内' },
-            { num: '300名+', label: '受講実績', sub: '2021年〜累計' },
-            { num: '94%', label: '目標達成率', sub: '6ヶ月サポート期間内' },
-          ].map(r => (
-            <div key={r.num} style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 8, padding: 14, textAlign: 'center' }}>
-              <div style={{ fontFamily: 'var(--font-display)', fontSize: 28, fontWeight: 600, color: 'var(--gold-l)' }}>{r.num}</div>
-              <div style={{ fontSize: 12, fontWeight: 500, color: 'var(--text)', marginTop: 4 }}>{r.label}</div>
-              <div style={{ fontSize: 10, color: 'var(--text3)', marginTop: 2 }}>{r.sub}</div>
+            '広告費を投下しても成約が増えない',
+            'SNS投稿を続けているが問い合わせが来ない',
+            '値下げしないと売れない状況が続いている',
+            '何を改善すれば売上が上がるか分からない',
+          ].map(p => (
+            <div key={p} style={{ display: 'flex', gap: 10, padding: '7px 0', borderBottom: '1px solid var(--border)', fontSize: 12.5, color: 'var(--text2)' }}>
+              <span style={{ color: 'var(--red)', flexShrink: 0 }}>✕</span>{p}
             </div>
           ))}
         </div>
-      </div>
+      )}
+
+      {/* Results / Proof */}
+      {showProof && achievementList.length > 0 && (
+        <div style={{ padding: '28px 40px', borderBottom: '1px solid var(--border)', background: 'rgba(201,168,76,.02)' }}>
+          <h3 style={{ fontFamily: 'var(--font-display)', fontSize: 20, marginBottom: 16, color: 'var(--gold-l)' }}>
+            実績・保証
+          </h3>
+          <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(achievementList.length, 3)},1fr)`, gap: 12 }}>
+            {achievementList.slice(0, 3).map((ach, i) => (
+              <div key={i} style={{ background: 'var(--surface)', border: '1px solid var(--border2)', borderRadius: 8, padding: 14, textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, fontWeight: 600, color: 'var(--gold-l)', lineHeight: 1.3 }}>{ach}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Anchor */}
+      {showAnchor && (
+        <div style={{ padding: '16px 40px', background: 'rgba(201,168,76,.04)', borderBottom: '1px solid var(--border)', textAlign: 'center' }}>
+          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text3)', textDecoration: 'line-through' }}>通常価格: ¥{anchorPrice}</span>
+          <span style={{ marginLeft: 12, fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--gold-l)' }}>→ 今なら特別価格でご提供</span>
+        </div>
+      )}
 
       {/* Price */}
       <div style={{ padding: '28px 40px', textAlign: 'center' }}>
         <div style={{ display: 'inline-block', background: 'linear-gradient(135deg,var(--surface),var(--bg3))', border: '1px solid var(--gold-d)', borderRadius: 12, padding: '24px 48px' }}>
           <div className="eyebrow" style={{ marginBottom: 8 }}>プログラム料金</div>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: 42, fontWeight: 600, color: 'var(--gold-l)' }}>¥{price}</div>
-          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 6 }}>分割払い対応 · 6ヶ月間全額返金保証</div>
+          <div style={{ fontSize: 11, color: 'var(--text3)', marginTop: 6 }}>{guarantee}</div>
         </div>
       </div>
     </div>

@@ -3,7 +3,6 @@
   "buildCommand": "next build",
   "devCommand": "next dev",
   "installCommand": "npm install",
-  "regions": ["nrt1"],
   "env": {
     "ANTHROPIC_API_KEY": "@anthropic-api-key",
     "NEXT_PUBLIC_APP_URL": "@app-url"
